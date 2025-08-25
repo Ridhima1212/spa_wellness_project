@@ -2,11 +2,16 @@
 const express = require('express');
 const router = express.Router();
 const serviceController = require('../controllers/services.controller');
+const { protect } = require('../middleware/auth.middleware');
+const { isAdmin } = require('../middleware/admin.middleware');
 
-// GET all services
+// --- PUBLIC ROUTES ---
 router.get('/', serviceController.getAllServices);
+router.get('/:id', serviceController.getServiceById); // <-- NEW: Get a single service
 
-// POST a new service
-router.post('/', serviceController.createNewService);
+// --- ADMIN ONLY ROUTES ---
+router.post('/', protect, isAdmin, serviceController.createNewService);
+router.put('/:id', protect, isAdmin, serviceController.updateService);
+router.delete('/:id', protect, isAdmin, serviceController.deleteService);
 
 module.exports = router;
